@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Day 04 - Scenes and Collisions</title>
+        <style>
+            *{
+                margin: 0px;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canv"></canvas>
+        <script>
+
+            // Game-specific state variables
+            let playerX 
+            let playerY
+
+
+            let circleX 
+            let circleY
+
+            let frames
+
+            // Engine-specific state variables
+            let canvas
+            let ctx
+
+            //Game loop (engine code)
+            function tick(){
+                update()
+                draw()
+            }
+
+            /**
+             * Setup the state of the game (game specific)
+             * Unity: Start()
+             * Unreal: BeginPlay()
+             * Game Maker Studio: create
+             * Godot: _ready()
+            */
+            function start(){
+                playerX = 100
+                playerY = 50
+
+                circleX = 100
+                circleY = 200
+
+                frames = 0
+            }
+
+            /**
+             * Update the state of the game (game specific)
+             * Unity: Update() or FixedUpdate()
+             * Unreal: Tick()
+             * Game Maker Studio: step
+             * Godot: _process()
+             */
+            function update(){
+                //x++ //x+=1
+                frames ++
+
+                if (keysdown.includes("ArrowUp")){
+                    playerY -= 1
+                }
+                if (keysdown.includes("ArrowDown")){
+                    playerY += 1
+                }
+                if (keysdown.includes("ArrowLeft")){
+                    playerX -= 1
+                }
+                if (keysdown.includes("ArrowRight")){
+                    playerX += 1
+                }
+
+                circleX = 100 + 100*Math.sin(frames/100)
+
+                if(playerY > 200)
+                    console.log("You won!")
+
+            }
+
+            /**
+             * Draw the state of the game (game specific)
+             * Often handled by a game engine's IDE
+            */
+            function draw(){
+                
+
+                canvas.width = window.innerWidth
+                canvas.height = window.innerHeight
+                ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+                ctx.beginPath()
+                ctx.fillStyle = "green"
+                ctx.strokeStyle = "yellow"
+                ctx.lineWidth = 5
+                ctx.arc(playerX, playerY, 50, 0, Math.PI*2)
+                
+                ctx.fill()
+                ctx.stroke()
+
+                //Draw sphere code
+                ctx.beginPath()
+                ctx.fillStyle = "red"
+                ctx.strokeStyle = "pink"
+                ctx.lineWidth = 5
+                ctx.arc(circleX, circleY, 20, 0, 2*Math.PI)
+                
+                ctx.fill()
+                ctx.stroke()
+
+                //Draw text
+                ctx.fillStyle = "black"
+                ctx.font = "30px Times New Roman"
+                ctx.fillText("Score: " + frames, 0, 20)
+
+                
+            }
+
+            // Keyboard input management (engine code)
+            let keysdown = []
+
+            function keydown(event){
+                if(!keysdown.includes(event.code))
+                    keysdown.push(event.code)
+
+                
+            }
+
+            function keyup(event){
+                console.log(event.code)
+
+                let index = keysdown.indexOf(event.code)
+                keysdown.splice(index,1)
+                //keysdown.push(event.code)
+            }
+
+            /**
+             * Setup the internals for the controller and view to run (engine code)
+            */
+            function setup(){
+                window.addEventListener("keydown", keydown)
+                window.addEventListener("keyup", keyup)
+
+                canvas = document.getElementById("canv")
+                ctx = canvas.getContext("2d")
+            }
+
+            setup() //Setup the mechanics of the game (engine code)
+            start() //Setup the state of the game (game code)
+            setInterval(tick, 50) //Start the game loop (engine code)
+            
+        </script>
+    </body>
+</html>
